@@ -47,3 +47,40 @@ for drone in drones:
 Drone.send_swarm(drones, 'command', 3)
 Drone.send_swarm(drones, 'takeoff', 3)
 ```
+
+The code above will create a thread for each drone and start listening for responses from the drones. Then it will send a command to put the drones in command mode, followed by a command to take off, and finally a command to land. Lastly, it will close all sockets.
+
+### Example: Flying a Square
+Here's an example of how to make a swarm of drones fly in a square using the Drone class:
+
+```python 
+# Create and start a listening thread for each drone
+for drone in drones:
+    receive_thread = threading.Thread(target=drone.receive)
+    receive_thread.daemon = True
+    receive_thread.start()
+
+# Put Tello drones into command mode
+Drone.send_swarm(drones, 'command', 3)
+
+# Takeoff
+Drone.send_swarm(drones, 'takeoff', 3)
+
+box_leg_distance = 60
+yaw_angle = 90
+
+# Loop and create each leg of the box
+for i in range(4):
+    # Fly forward
+    Drone.send_swarm(drones, "forward " + str(box_leg_distance), 3)
+    # Yaw right
+    Drone.send_swarm(drones, "cw " + str(yaw_angle), 3)
+
+Drone.send_swarm(drones, 'land', 3)
+
+# Close all sockets
+Drone.close_connection(drones)
+```
+
+## Conclusion
+The Drone class makes it easy to control a swarm of Tello drones from Python. With this class, you can send commands to multiple drones simultaneously and even make them fly in formations. Happy flying!
